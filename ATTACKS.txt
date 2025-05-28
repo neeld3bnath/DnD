@@ -22,7 +22,22 @@ DDoS - flurry of attacks
     - Rolls one dice for initial attack. Roll is increased by 5. 
         Each additional attack will be performed with a roll 1 lower than the previous (lowest roll being 5 unless initial roll lower than 5).
 
+Insecure Wifi - corrupt attack
+    - Rolls die to determine how potent it is
+    - If roll is 10 or higher, opponent cannot attack for one turn and opponent's next turn is lowered by 20%.
+    - If lower, player's attack is lowered by 10%
 
 
 Physical Security Flaw - Armor Weakness/Penetration
     - 
+
+Man At Mid - parry (once per wave)
+    - When opponent is about to attack, use Man At Mid to roll die
+    - If 15 or higher (except 20), deal 20% damage back at enemy
+    - If 20, deal 50% at enemy
+    (Player takes no damage if successful)
+
+Spoofing - mimic
+    - If roll is 18 or higher, seal one enemy attack
+    - If roll is 5 or lower, seal two of your attacks
+

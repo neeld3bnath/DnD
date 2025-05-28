@@ -24,17 +24,17 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         this.name = name;
         lose = false;
         try {
-            background = ImageIO.read(new File("src/Assets/maps/rsz_1mnqwyzz9e5r61.png"));
+            background = ImageIO.read(new File("Dnd/Assets/maps/background.jpg"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         try {
-            black = ImageIO.read(new File("src/Assets/bUKrna.jpeg"));
+            black = ImageIO.read(new File("Dnd/Assets/bUKrna.jpeg"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         try {
-            blank = ImageIO.read(new File("src/Assets/Blank.png"));
+            blank = ImageIO.read(new File("Dnd/Assets/Blank.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
