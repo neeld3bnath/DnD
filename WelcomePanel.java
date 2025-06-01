@@ -13,15 +13,9 @@ public class WelcomePanel extends JPanel implements ActionListener {
     private JButton submitButton;
     private JButton clearButton;
     private JFrame enclosingFrame;
-    private BufferedImage gem;
 
     public WelcomePanel(JFrame frame) {
         enclosingFrame = frame;
-        try {
-            gem = ImageIO.read(new File("src/Assets/diamond/imageedit_3_8646604447.png"));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
         textField = new JTextField(10);
         submitButton = new JButton("Submit");
         clearButton = new JButton("Clear");
@@ -38,7 +32,6 @@ public class WelcomePanel extends JPanel implements ActionListener {
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.setColor(Color.BLUE);
         g.drawString("Enter your name:", 50, 30);
-        g.drawImage(gem, 200, 40, null);
         textField.setLocation(50, 50);
         submitButton.setLocation(50, 100);
         clearButton.setLocation(150, 100);
