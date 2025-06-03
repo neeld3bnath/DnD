@@ -20,7 +20,7 @@ DoS - basic attack
 DDoS - flurry of attacks
     - Rolls dice to determine how many times you attack
     - Rolls one dice for initial attack. Roll is increased by 5. 
-        Each additional attack will be performed with a roll 1 lower than the previous (lowest roll being 5 unless initial roll lower than 5).
+        Each additional attack will be performed with a roll 3 lower than the previous (lowest roll being 5 unless initial roll lower than 5).
 
 Insecure Wifi - corrupt attack
     - Rolls die to determine how potent it is

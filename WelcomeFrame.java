@@ -1,21 +1,30 @@
 import javax.swing.*;
+import java.awt.*;
 
-public class WelcomeFrame {
+public class WelcomeFrame extends JFrame {
     private WelcomePanel panel;
 
     public WelcomeFrame() {
-        JFrame frame = new JFrame("Welcome");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
-        frame.setLocationRelativeTo(null); // auto-centers frame in screen
+        super("Cyber Security Battle");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setMinimumSize(new Dimension(600, 400));
+        setLocationRelativeTo(null); // Center on screen
+        
+        // Set application icon
+        try {
+            ImageIcon icon = new ImageIcon("icon.png");
+            setIconImage(icon.getImage());
+        } catch (Exception e) {
+            // Icon not found, use default
+        }
 
-        // create and add panel
-        panel = new WelcomePanel(frame);
-        frame.add(panel);
-
-        // display the frame
-        frame.setVisible(true);
-
-        // no thread needed here since we aren't doing animation for this frame/panel
+        // Create and add panel
+        panel = new WelcomePanel(this);
+        add(panel);
+        
+        // Enable anti-aliasing for better text rendering
+        System.setProperty("awt.useSystemAAFontSettings", "on");
+        System.setProperty("swing.aatext", "true");
     }
 }
