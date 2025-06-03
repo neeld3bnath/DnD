@@ -217,7 +217,7 @@ public class GameFrame extends JFrame {
     private void styleButton(JButton button, Color baseColor) {
         button.setFont(new Font("Arial", Font.BOLD, 12));
         button.setBackground(baseColor);
-        button.setForeground(Color.WHITE);
+        button.setForeground(button.isEnabled() ? Color.BLACK : Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createLineBorder(new Color(0, 200, 200), 2));
         button.setOpaque(true);
@@ -245,10 +245,12 @@ public class GameFrame extends JFrame {
         for (JButton button : attackButtons) {
             button.setEnabled(attackEnabled);
             button.setBackground(attackEnabled ? new Color(0, 100, 150) : Color.GRAY);
+            button.setForeground(attackEnabled ? Color.BLACK : Color.WHITE);
         }
         for (JButton button : defenseButtons) {
             button.setEnabled(defenseEnabled);
             button.setBackground(defenseEnabled ? new Color(100, 0, 150) : Color.GRAY);
+            button.setForeground(defenseEnabled ? Color.BLACK : Color.WHITE);
         }
     }
     
@@ -309,8 +311,15 @@ public class GameFrame extends JFrame {
                         for (ActionListener listener : button.getActionListeners()) {
                             if (listener instanceof DefenseButtonListener) {
                                 DefenseButtonListener defense = (DefenseButtonListener) listener;
-                                if (defense.isDodgeActive() && Math.random() > 0.5) { // 50% chance dodge works
-                                    dodged = true;
+                                if (defense.isDodgeActive()) {
+                                    int dodgeRoll = (int)(Math.random() * 20) + 1;
+                                    logMessage("Dodge roll: " + dodgeRoll);
+                                    if (dodgeRoll >= 10) {
+                                        dodged = true;
+                                    } else if (dodgeRoll <= 5) {
+                                        logMessage("Dodge failed! You can't dodge the next attack.");
+                                    }
+                                    defense.resetDodge(); // Reset dodge after use
                                 }
                                 if (defense.isFirewallActive()) {
                                     damageReduced = true;
@@ -447,16 +456,8 @@ public class GameFrame extends JFrame {
 
             switch (defenseIndex) {
                 case 0: // Access Control - dodge
-                    int dodgeRoll = (int)(Math.random() * 20) + 1;
-                    logMessage("Dodge roll: " + dodgeRoll);
-                    if (dodgeRoll >= 10) {
-                        dodgeActive = true;
-                        logMessage("Dodge successful! You'll avoid the next attack.");
-                    } else if (dodgeRoll <= 5) {
-                        logMessage("Dodge failed! You won't be able to dodge the next attack.");
-                    } else {
-                        logMessage("Dodge had no effect.");
-                    }
+                    dodgeActive = true;
+                    logMessage("Dodge activated! You'll get a dodge roll on the next attack.");
                     break;
                     
                 case 1: // Firewall - reduce damage
@@ -476,17 +477,20 @@ public class GameFrame extends JFrame {
             endPlayerTurn();
         }
         
-        public void resetDefenses() {
-            dodgeActive = false;
+        protected void resetDefenses() {
             firewallActive = false;
         }
         
-        public boolean isDodgeActive() {
+        protected boolean isDodgeActive() {
             return dodgeActive;
         }
         
-        public boolean isFirewallActive() {
+        protected boolean isFirewallActive() {
             return firewallActive;
+        }
+        
+        protected void resetDodge() {
+            dodgeActive = false;
         }
     }
     

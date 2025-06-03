@@ -78,7 +78,7 @@ public class WelcomePanel extends JPanel implements ActionListener {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setBackground(new Color(0, 100, 150));
-        button.setForeground(Color.WHITE);
+        button.setForeground(Color.BLACK); // Changed from WHITE to BLACK
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createLineBorder(new Color(0, 200, 200), 2));
         button.setPreferredSize(new Dimension(180, 50));
@@ -88,9 +88,11 @@ public class WelcomePanel extends JPanel implements ActionListener {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(new Color(0, 150, 200));
                 button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                button.setForeground(Color.BLACK); // Ensure text stays black on hover
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(new Color(0, 100, 150));
+                button.setForeground(Color.BLACK); // Ensure text stays black when not hovering
             }
         });
         
