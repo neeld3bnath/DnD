@@ -9,33 +9,19 @@ Zero day exploit - Blitzkrieg
     - If attacking on other turn
         - Roll will be decreased by 5 no matter what. If roll is under 5, it will cap at 0
         - Enemy perception roll: enemy perception > attack roll, attack fails and blitzkrieg is now disabled
-        
-XSS - steals opponent attack
-    - Rolls dice to determine which enemy skill you will copy
-    - Rolls additional dice to determine attack potency
 
 DoS - basic attack
     - Rolls dice to determine attack potency
 
 DDoS - flurry of attacks
     - Rolls dice to determine how many times you attack
-    - Rolls one dice for initial attack. Roll is increased by 5. 
-        Each additional attack will be performed with a roll 3 lower than the previous (lowest roll being 5 unless initial roll lower than 5).
+    - Rolls one dice for initial attack. Roll is decreased by 5. 
+    - Each additional attack will be performed with a roll 5 lower than the previous (lowest roll being 1 unless initial roll lower than 1)
 
 Insecure Wifi - corrupt attack
     - Rolls die to determine how potent it is
-    - If roll is 10 or higher, opponent cannot attack for one turn and opponent's next turn is lowered by 20%.
+    - If roll is 10 or higher, opponent cannot attack for one turn and opponent's next turn is lowered by 20%
     - If lower, player's attack is lowered by 10%
-
-
-Physical Security Flaw - Armor Weakness/Penetration
-    - 
-
-Man At Mid - parry (once per wave)
-    - When opponent is about to attack, use Man At Mid to roll die
-    - If 15 or higher (except 20), deal 20% damage back at enemy
-    - If 20, deal 50% at enemy
-    (Player takes no damage if successful)
 
 Spoofing - mimic
     - If roll is 18 or higher, seal one enemy attack
