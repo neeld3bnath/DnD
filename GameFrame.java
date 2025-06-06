@@ -385,6 +385,7 @@ public class GameFrame extends JFrame {
         revalidate();
         repaint();
 
+        // Increment turn count after each full round (both players have taken a turn)
         if (currentPlayer == 2) {
             turnCount++;
         }
@@ -402,14 +403,6 @@ public class GameFrame extends JFrame {
                 return;
             }
             
-            for (JButton button : defenseButtons) {
-                for (ActionListener listener : button.getActionListeners()) {
-                    if (listener instanceof DefenseButtonListener) {
-                        ((DefenseButtonListener) listener).resetDefenses();
-                    }
-                }
-            }
-
             updateTurnLabel();
             
             String currentPlayerName = (currentPlayer == 1) ? player1Name : player2Name;
@@ -501,7 +494,7 @@ public class GameFrame extends JFrame {
                             break;
                         }
                         
-                        boolean isFirstTurn = (currentPlayer == 1 && turnCount == 0) || (currentPlayer == 2 && turnCount == 1);
+                        boolean isFirstTurn = !hasUsedZeroDay[currentPlayer-1] && turnCount == 0;
                         
                         if (isFirstTurn) {
                             int roll = 1 + (int)(Math.random() * 20);
@@ -510,7 +503,7 @@ public class GameFrame extends JFrame {
                             if (Math.random() <= 0.01) { // 1% chance to miss
                                 logMessage("Zero Day Exploit missed! (Roll: " + roll + ")");
                             } else {
-                                int damage = 15 + modifiedRoll; // Base damage + roll
+                                int damage = modifiedRoll;
                                 if (isTargetDodging()) {
                                     int dodgeRoll = 1 + (int)(Math.random() * 20);
                                     if (dodgeRoll >= 10) { // 55% chance to dodge (11-20)
@@ -518,21 +511,20 @@ public class GameFrame extends JFrame {
                                     } else {
                                         damage = applyFirewallReduction(damage, targetPlayer);
                                         playerHP[targetPlayer] = Math.max(0, playerHP[targetPlayer] - damage);
-                                        logMessage("CRITICAL HIT! Zero Day Exploit dealt " + damage + " damage! (Dodge roll: " + dodgeRoll + ")");
+                                        logMessage("Zero Day Exploit dealt " + damage + " damage! (Dodge roll: " + dodgeRoll + ")");
                                     }
                                 } else {
                                     damage = applyFirewallReduction(damage, targetPlayer);
                                     playerHP[targetPlayer] = Math.max(0, playerHP[targetPlayer] - damage);
-                                    logMessage("CRITICAL HIT! Zero Day Exploit dealt " + damage + " damage! (Roll: " + roll + " → " + modifiedRoll + ")");
+                                    logMessage("Zero Day Exploit dealt " + damage + " damage! (Roll: " + roll + " → " + modifiedRoll + ")");
                                 }
                             }
                             hasUsedZeroDay[currentPlayer-1] = true;
+                            logMessage("Zero Day Exploit has been disabled after use!");
                         } else {
-                            // Subsequent turns behavior
                             int roll = 1 + (int)(Math.random() * 20);
-                            int modifiedRoll = Math.max(0, roll - 5); // Decrease by 5, minimum 0
+                            int modifiedRoll = Math.max(0, roll - 5);
                             
-                            // Opponent's perception roll
                             int perceptionRoll = 1 + (int)(Math.random() * 20);
                             
                             if (perceptionRoll > modifiedRoll) {
@@ -541,40 +533,51 @@ public class GameFrame extends JFrame {
                                     " vs Perception: " + perceptionRoll + ")");
                                 hasUsedZeroDay[currentPlayer-1] = true; // Disable after being countered
                             } else {
-                                int damage = 10 + modifiedRoll; // Lower base damage for non-first turn
-                                damage = applyFirewallReduction(damage, targetPlayer);
+                                int damage = modifiedRoll;
                                 if (isTargetDodging()) {
                                     int dodgeRoll = 1 + (int)(Math.random() * 20);
                                     if (dodgeRoll >= 10) { // 55% chance to dodge (11-20)
                                         logMessage("DODGED! " + (currentPlayer == 1 ? player2Name : player1Name) + " avoided the attack! (Dodge roll: " + dodgeRoll + ")");
                                     } else {
+                                        damage = applyFirewallReduction(damage, targetPlayer);
                                         playerHP[targetPlayer] = Math.max(0, playerHP[targetPlayer] - damage);
                                         logMessage("Zero Day Exploit dealt " + damage + " damage! (Dodge roll: " + dodgeRoll + ")");
                                     }
                                 } else {
+                                    damage = applyFirewallReduction(damage, targetPlayer);
                                     playerHP[targetPlayer] = Math.max(0, playerHP[targetPlayer] - damage);
                                     logMessage("Zero Day Exploit dealt " + damage + " damage! (Roll: " + roll + " → " + modifiedRoll + 
                                         " vs Perception: " + perceptionRoll + ")");
                                 }
+                                hasUsedZeroDay[currentPlayer-1] = true; // Disable after successful attack
+                                logMessage("Zero Day Exploit has been disabled after use!");
                             }
                         }
                         break;
 
                     case 1: // DoS - basic attack
                         int basicDamage1 = 10 + (int)(Math.random() * 15); // 10-25 damage
+                        boolean attackHit = true;
+                        
                         if (isTargetDodging()) {
                             int dodgeRoll = 1 + (int)(Math.random() * 20);
                             if (dodgeRoll >= 10) { // 55% chance to dodge (11-20)
                                 logMessage("DODGED! " + (currentPlayer == 1 ? player2Name : player1Name) + " avoided the attack! (Dodge roll: " + dodgeRoll + ")");
+                                attackHit = false;
                             } else {
-                                basicDamage1 = applyFirewallReduction(basicDamage1, targetPlayer);
-                                playerHP[targetPlayer] = Math.max(0, playerHP[targetPlayer] - basicDamage1);
-                                logMessage("Dealt " + basicDamage1 + " damage with a basic attack! (Dodge roll: " + dodgeRoll + ")");
+                                logMessage("Dodge failed! (Roll: " + dodgeRoll + ")");
                             }
-                        } else {
+                        }
+                        
+                        if (attackHit) {
+                            int originalDamage = basicDamage1;
                             basicDamage1 = applyFirewallReduction(basicDamage1, targetPlayer);
                             playerHP[targetPlayer] = Math.max(0, playerHP[targetPlayer] - basicDamage1);
-                            logMessage("Dealt " + basicDamage1 + " damage with a basic attack!");
+                            if (basicDamage1 < originalDamage) {
+                                logMessage("Dealt " + basicDamage1 + " damage with a basic attack! (Reduced from " + originalDamage + " by firewall)");
+                            } else {
+                                logMessage("Dealt " + basicDamage1 + " damage with a basic attack!");
+                            }
                         }
                         break;
 
@@ -706,10 +709,17 @@ public class GameFrame extends JFrame {
                     break;
                     
                 case 2: // Data Backup - heal
-                    int healAmount = 25; // 25% of max HP
-                    playerHP[currentPlayer-1] = Math.min(100, playerHP[currentPlayer-1] + healAmount);
-                    logMessage(currentPlayerName + " recovered " + healAmount + " HP!");
-                    updateHPBars();
+                    int maxHP = 200;
+                    int healAmount = 25;
+                    int newHP = Math.min(maxHP, playerHP[currentPlayer-1] + healAmount);
+                    int actualHeal = newHP - playerHP[currentPlayer-1];
+                    if (actualHeal > 0) {
+                        playerHP[currentPlayer-1] = newHP;
+                        logMessage(currentPlayerName + " recovered " + actualHeal + " HP!");
+                        updateHPBars();
+                    } else {
+                        logMessage(currentPlayerName + " is already at full health!");
+                    }
                     break;
             }
             
@@ -717,6 +727,7 @@ public class GameFrame extends JFrame {
         }
         
         protected void resetDefenses() {
+            dodgeActive = false;
             firewallActive = false;
         }
         
@@ -738,7 +749,7 @@ public class GameFrame extends JFrame {
     }
     
     private boolean isTargetDodging() {
-        int targetButtonIndex = (currentPlayer == 1) ? 0 : 0; // Fix target player index if needed
+        int targetButtonIndex = (currentPlayer == 1) ? 0 : 0;
         for (ActionListener listener : defenseButtons[targetButtonIndex].getActionListeners()) {
             if (listener instanceof DefenseButtonListener) {
                 DefenseButtonListener dbl = (DefenseButtonListener) listener;
@@ -759,7 +770,7 @@ public class GameFrame extends JFrame {
     }
     
     private int applyFirewallReduction(int damage, int targetPlayer) {
-        int targetButtonIndex = (currentPlayer == 1) ? 0 : 0; // Match target player index with isTargetDodging
+        int targetButtonIndex = (targetPlayer == 1) ? 0 : 1;
         for (ActionListener listener : defenseButtons[targetButtonIndex].getActionListeners()) {
             if (listener instanceof DefenseButtonListener) {
                 DefenseButtonListener dbl = (DefenseButtonListener) listener;
