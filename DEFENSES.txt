@@ -6,7 +6,7 @@ Access Control - dodge mechanic
     - If roll is 5 or lower, you cannot dodge the attack
 
 Firewalls and Advanced Security Devices - shield
-    - Reduces damage by 50%
+    - Reduces damage of the opponent’s move in the next turn by 50%
 
 Data Backup - recovery
-    - Heals 25% of max HP
+    - Heals 25 HP
